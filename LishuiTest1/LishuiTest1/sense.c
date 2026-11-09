@@ -1,0 +1,73 @@
+#include <m8c.h>
+#include "bldc.h"
+#include "sense.h"
+
+// mV = wVraw * VBAT_MUL / 256 + VBAT_OFS_MV
+#define VBAT_MUL     5333
+#define VBAT_OFS_MV  667
+
+tLive Live;
+
+static tRaw stRaw;
+static uint8_t bIdleWins;
+
+uint8_t Sense_bUpdate(void)
+{
+    static int16_t d;              // static: saves stack
+    static uint32_t x;
+
+    if (!BLDC_bGetRaw(&stRaw)) return 0;
+
+    Live.wIraw = stRaw.wI;
+
+    // Auto-zero: the boot zero is taken while the PGA / SAR still settle,
+    // and the offset drifts with temperature.  At low duty the battery
+    // current target is only Iph max * duty, ~1 A, so an offset of that
+    // size stalls the loop below full throttle.  Re-zero after two whole
+    // idle windows (gates off, no command; the first one lets the current
+    // decay), below the ERPM derate: back-EMF under Vbat, no diode regen.
+    if (stRaw.bIdle && Live.wErpm < Cfg.wErpmLimStart) {
+        if (bIdleWins < 2) bIdleWins++;
+    } else {
+        bIdleWins = 0;
+    }
+    if (bIdleWins >= 2) Live.wIzero = stRaw.wI;
+    Live.wVraw = stRaw.wV;
+    Live.bDuty = BLDC_bGetDuty();
+
+    d = (int16_t)(stRaw.wI - Live.wIzero);
+    Live.iIbat_mA = (int16_t)((int32_t)d * CS_MA_PER_COUNT_Q8 / 256);
+
+    x = (((uint32_t)stRaw.wV * VBAT_MUL) >> 8) + VBAT_OFS_MV;
+    Live.wVbat_mV = (x > 0xFFFF) ? 0xFFFF : (uint16_t)x;        // > 65.5 V
+
+    if (Live.iIbat_mA > 0) {
+        x = (uint32_t)Live.wVbat_mV * (uint16_t)Live.iIbat_mA;
+        Live.wPbat_W = (uint16_t)((((x >> 10) * 1074) >> 20));           // / 1e6
+        if (Live.bDuty) {
+            x = ((uint32_t)Live.iIbat_mA << 8) / Live.bDuty;
+            Live.wIph_mA = (x > 0xFFFF) ? 0xFFFF : (uint16_t)x;
+        } else {
+            Live.wIph_mA = 0;
+        }
+    } else {
+        Live.wPbat_W = 0;
+        Live.wIph_mA = 0;
+    }
+    return 1;
+}
+
+// 6 edges per e-rev, 1/8 s window: erpm = edges * 80
+uint8_t Sense_bUpdateErpm(void)
+{
+    static uint8_t e;
+
+    if (!BLDC_bGetEdges(&e)) return 0;
+    Live.wErpm = ((uint16_t)e << 6) + ((uint16_t)e << 4);
+    return 1;
+}
+
+void Sense_Zero(void)
+{
+    Live.wIzero = Live.wIraw;
+}

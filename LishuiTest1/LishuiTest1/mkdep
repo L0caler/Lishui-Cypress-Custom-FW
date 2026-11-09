@@ -1,0 +1,1 @@
+-a -f project.dep -p./std/obj/ -o.o -- -IG:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include -I./lib -I./std -I. -IG:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033  -- 
