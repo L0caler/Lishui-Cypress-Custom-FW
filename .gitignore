@@ -1,0 +1,13 @@
+# PSoC Designer build output
+LishuiTest1/LishuiTest1/obj/
+LishuiTest1/LishuiTest1/lib/obj/
+LishuiTest1/LishuiTest1/output/
+LishuiTest1/LishuiTest1/backup/
+LishuiTest1/LishuiTest1/BuildMsg.txt
+LishuiTest1/LishuiTest1/project.dep.bak
+*.o
+
+# Programmer
+psoc1_prog/.pio/
+__pycache__/
+*.pyc
