@@ -10,8 +10,8 @@
 			<SOURCE_FILE_LIST>
 				<SOURCE_FILE NAME="main.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE=""/>
 				<SOURCE_FILE NAME="flashsecurity.txt" TYPE="TextFile" LANGUAGE="" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE=""/>
-				<SOURCE_FILE NAME="psocapi.h" TYPE="LibraryIncludeFile" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="291892528" LIBTIME="1"/>
-				<SOURCE_FILE NAME="psocapi.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="291891856" LIBTIME="3"/>
+				<SOURCE_FILE NAME="psocapi.h" TYPE="LibraryIncludeFile" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="278967424" LIBTIME="1"/>
+				<SOURCE_FILE NAME="psocapi.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="278966592" LIBTIME="3"/>
 				<SOURCE_FILE NAME="memory.inc" TYPE="UserIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE=""/>
 				<SOURCE_FILE NAME="bldc.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
 				<SOURCE_FILE NAME="sense.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
@@ -22,318 +22,6 @@
 				<SOURCE_FILE NAME="limit.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
 				<SOURCE_FILE NAME="limit.h" TYPE="UserIncludeFile" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Header Files"/>
 				<SOURCE_FILE NAME="types.h" TYPE="UserIncludeFile" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Header Files"/>
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 				<SOURCE_FILE NAME="inputs.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
 				<SOURCE_FILE NAME="comm_binary.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
 				<SOURCE_FILE NAME="comm_text.c" TYPE="UserSourceModule" LANGUAGE="C" OVERLAY_NAME="" USER_FILE="TRUE" PATH_IN_TREE="[SOCDIR]\Source Files"/>
@@ -413,102 +101,30 @@
 				
 				
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				<SOURCE_FILE NAME="pga_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="236888248"/>
-				<SOURCE_FILE NAME="pga_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="236888248"/>
-				<SOURCE_FILE NAME="pga_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="236888248"/>
-				<SOURCE_FILE NAME="pwmdb8_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="234086464"/>
-				<SOURCE_FILE NAME="pwmdb8_1int.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="234086464"/>
-				<SOURCE_FILE NAME="pwmdb8_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="234086464"/>
-				<SOURCE_FILE NAME="pwmdb8_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="-1849939730"/>
-				<SOURCE_FILE NAME="sar8_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="232728848"/>
-				<SOURCE_FILE NAME="sar8_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="232728848"/>
-				<SOURCE_FILE NAME="sar8_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="232728848"/>
-				<SOURCE_FILE NAME="sar8_1int.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="232728848"/>
-				<SOURCE_FILE NAME="uart.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="238487600"/>
-				<SOURCE_FILE NAME="uartplus.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="238487600"/>
-				<SOURCE_FILE NAME="uart.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="238487600"/>
-				<SOURCE_FILE NAME="uartint.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="238487600"/>
-				<SOURCE_FILE NAME="uart.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211421136" LIBTIME="238487600"/>
-				<SOURCE_FILE NAME="psocconfigtbl.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
-				<SOURCE_FILE NAME="psocgpioint.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
-				<SOURCE_FILE NAME="psocgpioint.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
-				<SOURCE_FILE NAME="psocgpioint.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
-				<SOURCE_FILE NAME="psocconfig.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
+				<SOURCE_FILE NAME="pga_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="218764272"/>
+				<SOURCE_FILE NAME="pga_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="218764272"/>
+				<SOURCE_FILE NAME="pga_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="218764272"/>
+				<SOURCE_FILE NAME="pwmdb8_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="222329456"/>
+				<SOURCE_FILE NAME="pwmdb8_1int.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="222329456"/>
+				<SOURCE_FILE NAME="pwmdb8_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="222329456"/>
+				<SOURCE_FILE NAME="pwmdb8_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="-640331403"/>
+				<SOURCE_FILE NAME="sar8_1.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="221807880"/>
+				<SOURCE_FILE NAME="sar8_1.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="221807880"/>
+				<SOURCE_FILE NAME="sar8_1.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="221807880"/>
+				<SOURCE_FILE NAME="sar8_1int.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="221807880"/>
+				<SOURCE_FILE NAME="uart.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="219993640"/>
+				<SOURCE_FILE NAME="uartplus.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="219993640"/>
+				<SOURCE_FILE NAME="uart.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="219993640"/>
+				<SOURCE_FILE NAME="uartint.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="219993640"/>
+				<SOURCE_FILE NAME="uart.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206768080" LIBTIME="219993640"/>
+				<SOURCE_FILE NAME="psocconfigtbl.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
+				<SOURCE_FILE NAME="psocgpioint.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
+				<SOURCE_FILE NAME="psocgpioint.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
+				<SOURCE_FILE NAME="psocgpioint.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
+				<SOURCE_FILE NAME="psocconfig.asm" TYPE="LibrarySource" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
 				<SOURCE_FILE NAME="boot.asm" TYPE="UserSourceModule" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE=""/>
-				<SOURCE_FILE NAME="globalparams.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
-				<SOURCE_FILE NAME="globalparams.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="211419136" LIBTIME="0"/>
+				<SOURCE_FILE NAME="globalparams.inc" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
+				<SOURCE_FILE NAME="globalparams.h" TYPE="LibraryIncludeFile" LANGUAGE="ASM" OVERLAY_NAME="" USER_FILE="FALSE" PATH_IN_TREE="" FILEMODTIME="206766080" LIBTIME="0"/>
 			</SOURCE_FILE_LIST>
 			<LIB_FILE_LIST>
 				<LIB_FILE NAME="libPSoC.a" TYPE="UserLibrary">

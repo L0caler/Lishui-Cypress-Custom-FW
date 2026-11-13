@@ -8,17 +8,19 @@
 #include "types.h"
 #include "config.h"
 
-// TODO: pin.  Not port 2: reading PRT2DR re-arms the hall ChangeFromRead.
 #define PAS_DR          PRT0DR
 #define PAS_MASK        0x80
 
 extern uint8_t PAS_bLevel, PAS_bFilt, PAS_bSinceRise, PAS_bSinceFall;
 extern uint8_t PAS_bPeriod, PAS_bHigh, PAS_bNew;
 
-// Tick ISR only (no call).  Counters saturate at 255 ticks.
-#define PAS_TICK() do {                                                 \
-    if (PAS_bSinceRise != 255) PAS_bSinceRise++;                        \
-    if (PAS_bSinceFall != 255) PAS_bSinceFall++;                        \
+// Tick ISR only (no call).  Pin filtered every tick, periods counted every
+// PAS_PRESCALE ticks.  Counters saturate at 255.
+#define PAS_TICK(tick) do {                                             \
+    if (((tick) & (PAS_PRESCALE - 1)) == 0) {                           \
+        if (PAS_bSinceRise != 255) PAS_bSinceRise++;                    \
+        if (PAS_bSinceFall != 255) PAS_bSinceFall++;                    \
+    }                                                                   \
     if (!(PAS_DR & PAS_MASK) == !PAS_bLevel) {                          \
         PAS_bFilt = 0;                                                  \
     } else if (++PAS_bFilt >= PAS_FILTER) {                             \

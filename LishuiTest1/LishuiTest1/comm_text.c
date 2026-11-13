@@ -66,7 +66,7 @@ void Comm_Init(void)
     UART_Start(UART_PARITY_NONE);
     UART_IntCntl(UART_DISABLE_RX_INT);  // polled one byte at a time
     UART_CPutString("\r\n*** RESET *** L0caler BLDC\r\n");
-    UART_CPutString("g=go s=stop +/-=current x=ext/int r=dir a/d=bat lim j/k=ph lim\r\n");
+    UART_CPutString("g=go s=stop +/-=current x=ext/int a/d=bat lim j/k=ph lim\r\n");
 }
 
 void Comm_SendStatus(void)
@@ -76,7 +76,6 @@ void Comm_SendStatus(void)
     putDec(Live.bDuty);
     UART_PutChar('/');
     putDec(Cfg.bDutyMax);
-    if (BLDC_bIsReverse()) UART_CPutString(" rev"); else UART_CPutString(" fwd");
     UART_CPutString(" I ");
     if (Live.iIbat_mA < 0) {
         UART_PutChar('-');
@@ -172,9 +171,6 @@ void Comm_Poll(void)
     case 'k':
         if (Cfg.wIphMax_mA < IPH_MAX_LIMIT_MA) Cfg.wIphMax_mA += 100;
         Limit_Update();
-        break;
-    case 'r':
-        if (!BLDC_bIsEnabled()) BLDC_SetReverse(!BLDC_bIsReverse());
         break;
     default:
         return;

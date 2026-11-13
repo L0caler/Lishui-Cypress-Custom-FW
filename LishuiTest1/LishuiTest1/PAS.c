@@ -4,7 +4,7 @@
 #include <m8c.h>
 #include "PAS.h"
 
-#define TICKS_PER_MIN   30720U  // 512 Hz
+#define TICKS_PER_MIN   (30720U / PAS_PRESCALE)  // 512 Hz / prescale
 #define PERIOD_MIN      (TICKS_PER_MIN / (PAS_RPM_MAX * PAS_MAGNETS))
 #define PERIOD_MAX      (TICKS_PER_MIN / (PAS_RPM_MIN * PAS_MAGNETS))
 

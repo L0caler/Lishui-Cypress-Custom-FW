@@ -30,6 +30,7 @@ typedef struct {
 extern tLive Live;
 
 uint8_t Sense_bUpdate(void);   	// 1 = new values (every 0.5 s)
+uint8_t Sense_bUpdateErpm(void);	// 1 = new wErpm (every 1/8 s)
 void Sense_Zero(void);      	// motor stopped: wIzero = wIraw
 
 #endif

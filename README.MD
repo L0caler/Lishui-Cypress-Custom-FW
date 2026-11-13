@@ -5,7 +5,6 @@ The code uses hall sensors, the ESC is sensorless. There is an addon PCB with an
 The original Lishui firmware could not be read out, so this is not based on the original functionality. On this firmware the motor is controlled by ADC / Throttle (POR Connector) under the condition that PAS (VP Connector) is active and brake (BK Connector) is pulled high. It can also be controlled via UART instead.
 
 Current calculation from the shunt is inaccurate, it should be measured and adjusted. 
-The firmware has not been tested on a bike yet.
 Edit parameters in config.h
 
 ### Lishui Debug Pinout

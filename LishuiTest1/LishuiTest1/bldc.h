@@ -13,21 +13,19 @@ extern uint8_t Port_2_Shadow;
 
 void BLDC_Init(void);
 void BLDC_Enable(uint8_t on);
-void BLDC_SetReverse(uint8_t reverse);// only while disabled
 
 uint8_t BLDC_bGetDuty(void);
 uint8_t BLDC_bIsEnabled(void);
-uint8_t BLDC_bIsReverse(void);
 uint8_t BLDC_bHallFault(void);         // halls 000 / 111 for > 20 ms
 
 // Raw sums of one 0.5 s window, from the ISRs
 typedef struct {
     uint16_t wI;// current, counts x16
     uint16_t wV;// vbat, counts x16
-    uint16_t wEdges;// hall edges
 } tRaw;
 
 uint8_t BLDC_bGetRaw(tRaw *p);         // 1 = new window copied
+uint8_t BLDC_bGetEdges(uint8_t *p);    // 1 = new hall edge count of 1/8 s
 uint8_t BLDC_bGetThrottle(uint8_t *p); // 1 = new raw SAR sample, 32 Hz
 // Battery current target for the PI, from Limit_Update().
 // ISR: target = min(wBat, wPh * duty / 256) * bScale / 256 + wZero

@@ -40,10 +40,16 @@ uint8_t Sense_bUpdate(void)
         Live.wPbat_W = 0;
         Live.wIph_mA = 0;
     }
+    return 1;
+}
 
-        // 6 edges per e-rev, 0.5 s window: erpm = edges * 20
-    Live.wErpm = (stRaw.wEdges > 3276) ? 0xFFFF
-               : (stRaw.wEdges << 4) + (stRaw.wEdges << 2);
+// 6 edges per e-rev, 1/8 s window: erpm = edges * 80
+uint8_t Sense_bUpdateErpm(void)
+{
+    static uint8_t e;
+
+    if (!BLDC_bGetEdges(&e)) return 0;
+    Live.wErpm = ((uint16_t)e << 6) + ((uint16_t)e << 4);
     return 1;
 }
 
