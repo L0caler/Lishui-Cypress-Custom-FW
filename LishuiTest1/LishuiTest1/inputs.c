@@ -38,7 +38,7 @@ void Inputs_Update(void)
     }
 
     if (Cfg.bExternalRel) return;
-    if (PAS_bIsActive() && !bBrake)
+    if (PAS_bIsActive() && bBrake)
         BLDC_SetCurrentRel(throttleToRel(Inputs_bThrottle()));
     else
         BLDC_SetCurrentRel(0);

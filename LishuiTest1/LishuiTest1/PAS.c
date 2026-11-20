@@ -8,6 +8,10 @@
 #define PERIOD_MIN      (TICKS_PER_MIN / (PAS_RPM_MAX * PAS_MAGNETS))
 #define PERIOD_MAX      (TICKS_PER_MIN / (PAS_RPM_MIN * PAS_MAGNETS))
 
+// Timeout p * PAS_DROP in 1/16 steps, folded at compile time (no float code)
+#define DROP_Q4         ((uint16_t)(PAS_DROP * 16 + 0.5))
+#define DROP_PERIOD(p)  ((uint16_t)(p) * DROP_Q4 >> 4)
+
 #if PERIOD_MAX > 254
 #error PAS_RPM_MIN too low for 8 bit tick counters
 #endif
@@ -25,7 +29,7 @@ void PAS_Update(void)
 
     if (!PAS_bNew) {
         h = PAS_bSinceFall;
-        if (bCount && (h >= PERIOD_MAX || h > (uint16_t)bLast * PAS_DROP)) {
+        if (bCount && (h >= PERIOD_MAX || h > DROP_PERIOD(bLast))) {
             bCount = 0;
             wRpm = 0;
         }

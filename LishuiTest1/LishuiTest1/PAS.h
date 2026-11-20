@@ -9,7 +9,7 @@
 #include "config.h"
 
 #define PAS_DR          PRT0DR
-#define PAS_MASK        0x80
+#define PAS_MASK        0x80 // original PRT0DR, 0x80. Temporarily changed to Brake GPIO P1[5] PRT1DR 0x20
 
 extern uint8_t PAS_bLevel, PAS_bFilt, PAS_bSinceRise, PAS_bSinceFall;
 extern uint8_t PAS_bPeriod, PAS_bHigh, PAS_bNew;
