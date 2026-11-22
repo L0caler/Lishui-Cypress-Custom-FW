@@ -35,7 +35,8 @@
 #define SYNC_HOLD               4       // 32 Hz samples before sync switches
 
 // Beep
-#define BEEP_PULSE              16      // on-time per period, ~2.6 us each.  Peak A = Vbat * time / L
+#define BEEP_PULSE              24      // on-time per period, ~2.6 us each.  Peak A = Vbat * time / L
+                                        // (was 16: +50 % peak current, ~+3.5 dB)
 // 480..3000 Hz, outside: compile error (array size -1)
 #define BEEP_HZ(f)              ((uint8_t)(120000UL / (f) - 5 - BEEP_PULSE * 5 / 16 \
                                     + 0 * sizeof(char[((f) >= 480 && (f) <= 3000) ? 1 : -1])))
@@ -70,7 +71,8 @@
 #define CFG_ERPM_LIM_START      4300
 #define CFG_VBAT_MIN_MV         30500       // 0 = off
 #define CFG_VBAT_LIM_START_MV   35000
-#define VBAT_WARN_MV            33000       // low-battery cue, independent of the derate
+#define VBAT_WARN1_MV           35000       // low-battery cues, independent of the derate:
+#define VBAT_WARN2_MV           33000       // 1 chirp pair at WARN1, 2 at WARN2, 3 at CFG_VBAT_MIN
 #define CFG_EXTERNAL_REL        0       // 0 = inputs.c, 1 = UART
 
 typedef struct {
