@@ -65,7 +65,9 @@ void Comm_Init(void)
     stackFill();
     UART_Start(UART_PARITY_NONE);
     UART_IntCntl(UART_DISABLE_RX_INT);  // polled one byte at a time
-    UART_CPutString("\r\n*** RESET *** L0caler BLDC\r\n");
+    UART_CPutString("\r\n*** RESET *** L0caler BLDC tick:");
+    putDec((uint16_t)(TICK_CAL_K / BLDC_wGetCalN()));
+    UART_CPutString("Hz\r\n");
     UART_CPutString("g=go s=stop +/-=current x=ext/int a/d=bat lim j/k=ph lim\r\n");
 }
 

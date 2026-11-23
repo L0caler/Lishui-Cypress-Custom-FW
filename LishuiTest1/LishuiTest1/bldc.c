@@ -314,6 +314,30 @@ void BLDC_TickISR(void)
     }
 }
 
+// Count delayShort(255) passes (CAL_CYCLES each) between the first sleep
+// tick and CAL_TICKS ticks later.  Interrupts off, the tick is polled.
+static uint16_t wCalN;
+
+static void calibrateTick(void)
+{
+    uint16_t n = 0;
+    uint8_t t = 0;
+
+    INT_CLR0 = 0xFF ^ INT_MSK0_SLEEP;
+    do {
+        delayShort(255);
+        n++;
+        if (INT_CLR0 & INT_MSK0_SLEEP) {
+            INT_CLR0 = 0xFF ^ INT_MSK0_SLEEP;
+            if (t++ == 0) n = 0;    // first tick: start counting
+        }
+    } while (t <= CAL_TICKS && n < CAL_N_MAX);
+    if (t <= CAL_TICKS || n < CAL_N_MIN) n = CAL_N_NOMINAL;
+    wCalN = n;
+}
+
+uint16_t BLDC_wGetCalN(void) { return wCalN; }
+
 void BLDC_Init(void)
 {
     //gates off; hall bits 1 (pull-ups)
@@ -329,8 +353,10 @@ void BLDC_Init(void)
 
     bHall = PRT2DR & HALL_MASK;     // hall interrupt
     bHallValid = (abHallToStep[bHall] != NO_STEP) ? bHall : 0;
+    M8C_DisableGInt;
     M8C_EnableIntMask(INT_MSK0, INT_MSK0_GPIO);
     M8C_EnableIntMask(INT_MSK0, INT_MSK0_SLEEP);
+    calibrateTick();
     M8C_EnableGInt;
 }
 

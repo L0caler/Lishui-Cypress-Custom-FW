@@ -11,7 +11,8 @@
 extern uint8_t Port_1_Shadow;
 extern uint8_t Port_2_Shadow;
 
-void BLDC_Init(void);
+void BLDC_Init(void);           // also calibrates the 512 Hz tick, ~0.25 s
+uint16_t BLDC_wGetCalN(void);    // calibration count, CAL_N_NOMINAL = exact 512 Hz
 void BLDC_Enable(uint8_t on);
 void BLDC_Beep(uint8_t period, uint8_t ticks);  // blocking, stops the drive
 

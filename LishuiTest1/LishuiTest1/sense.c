@@ -57,13 +57,17 @@ uint8_t Sense_bUpdate(void)
     return 1;
 }
 
-// 6 edges per e-rev, 1/8 s window: erpm = edges * 80
+// 6 edges per e-rev, 64-tick window (1/8 s at exactly 512 Hz: edges * 80).
+// The tick is not exact: scaled by the boot calibration.
 uint8_t Sense_bUpdateErpm(void)
 {
     static uint8_t e;
+    static uint32_t x;
 
     if (!BLDC_bGetEdges(&e)) return 0;
-    Live.wErpm = ((uint16_t)e << 6) + ((uint16_t)e << 4);
+    x = (uint32_t)e * ERPM_CAL_K;
+    x /= BLDC_wGetCalN();
+    Live.wErpm = (uint16_t)x;
     return 1;
 }
 

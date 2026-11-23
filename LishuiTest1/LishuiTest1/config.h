@@ -21,10 +21,26 @@
 
 // Motor drive
 #define BLDC_DUTY_MAX           240     // 8bit, bootstrap
-#define RAMP_TICKS_MASK         1       // duty +1 per 2 ticks: 256 / s
+#define RAMP_TICKS_MASK         0       // duty +1 per tick: 512 / s (was 1: 256 / s)
 #define HALL_FAULT_TICKS        10      // 512 Hz ticks
+
+// Tick calibration: the 512 Hz sleep timer runs off the internal 32 kHz
+// oscillator (15..64 kHz spec).  At boot, delayShort(255) calls are counted
+// over CAL_TICKS ticks, timed by the CPU clock (IMO, +-2.5 %).
+#define CPU_HZ                  12000000UL  // SysClk / 2, CPU_CLOCK 2
+#define CAL_TICKS               128         // ~0.25 s at boot
+#define CAL_CYCLES              6800UL      // CPU cycles per calibration loop pass:
+                                            // delayShort(255) = 89 + 26 * 255, + loop ~80
+#define CAL_N_NOMINAL           ((uint16_t)(CAL_TICKS * CPU_HZ / 512 / CAL_CYCLES))  // 441
+#define CAL_N_MIN               150         // outside: oscillator implausible, use nominal
+#define CAL_N_MAX               1500
+// erpm = edges per 64 ticks * ERPM_CAL_K / N  (80 per edge at 512 Hz)
+#define ERPM_CAL_K              (10UL * CPU_HZ / 64 * CAL_TICKS / CAL_CYCLES)        // 35294
+// measured tick rate in Hz = TICK_CAL_K / N
+#define TICK_CAL_K              (CAL_TICKS * CPU_HZ / CAL_CYCLES)                    // 225882
+
 #define IREL_RAMP_UP            8
-#define IREL_RAMP_DOWN          8
+#define IREL_RAMP_DOWN          16      // per 32 Hz sample: 255 -> 0 in ~0.5 s (was 8: ~1 s)
 #define ILIM_UP_SHIFT           4       // duty up per 32 Hz sample: 1 + error >> (shift + duty/64)
 #define ILIM_DOWN_SHIFT         6       // duty down per sample: error >> (shift + duty/64)
                                         // gain falls with duty (plant gain ~ Vbat*duty/R)
@@ -58,17 +74,17 @@
 
 // Throttle / brake
 #define THROTTLE_EMA_SHIFT      2
-#define THROTTLE_MIN            51      // 8bit
-#define THROTTLE_MAX            68     // 8bit
+#define THROTTLE_MIN            52      // 8bit
+#define THROTTLE_MAX            67     // 8bit
 #define BRAKE_DEBOUNCE          2       // 32 Hz samples
 
 // Cfg defaults
 #define CFG_PMAX_W              500
 #define CFG_DUTY_MAX            BLDC_DUTY_MAX
-#define CFG_IBAT_MAX_MA         10000
-#define CFG_IPH_MAX_MA          25000
-#define CFG_ERPM_MAX            4907
-#define CFG_ERPM_LIM_START      4300
+#define CFG_IBAT_MAX_MA         8000
+#define CFG_IPH_MAX_MA          20000
+#define CFG_ERPM_MAX            9814    // was 4907; edge counter (uint8, 1/8 s) tops out at 20400
+#define CFG_ERPM_LIM_START      ((uint16_t)(CFG_ERPM_MAX * 9UL / 10))   // derate starts at 90 % (8832)
 #define CFG_VBAT_MIN_MV         30500       // 0 = off
 #define CFG_VBAT_LIM_START_MV   35000
 #define VBAT_WARN1_MV           35000       // low-battery cues, independent of the derate:
