@@ -61,8 +61,12 @@ AREA InterruptRAM (RAM, REL, CON)
 ;------------------------
 ;  Constant Definitions
 ;------------------------
-UART_RX_RING_SIZE:   equ 0x20
-UART_RX_RING_MASK:   equ 0x1f
+; 8, not 32: the bytes go to the stack, which wrapped past 0xFF onto
+; bIrelTarget/bIrelSmoothed at 0x00 with 32.  Comm_Poll drains it every
+; main loop pass; a longer frame that meets a blocking transmit is dropped
+; and resent by the ESP32.  Keep comm_binary.c in step.
+UART_RX_RING_SIZE:   equ 0x08
+UART_RX_RING_MASK:   equ 0x07
 
 ;------------------------
 ; Variable Allocation

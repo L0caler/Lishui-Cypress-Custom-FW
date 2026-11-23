@@ -1,113 +1,114 @@
 # DO NOT DELETE
-./obj/bldc.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSoCGPIOINT.h\
+./obj/bldc.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSOCGP~1.H\
    ./lib/PWMDB8_1.h ./lib/SAR8_1.h ./lib/UART.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/M8C.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/M8C.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./obj/boot.o : \
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\lib\GlobalParams.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8ssc.inc
-./obj/comm_binary.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSoCGPIOINT.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8ssc.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\lib\GLOBAL~1.INC\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
+./obj/comm_binary.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSOCGP~1.H\
    ./lib/PWMDB8_1.h ./lib/SAR8_1.h ./lib/UART.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\comm.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\inputs.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\sense.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/M8C.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
-./obj/comm_text.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSoCGPIOINT.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/M8C.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\comm.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\inputs.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\sense.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
+./obj/comm_text.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSOCGP~1.H\
    ./lib/PWMDB8_1.h ./lib/SAR8_1.h ./lib/UART.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\comm.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\inputs.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\sense.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/M8C.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/M8C.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\comm.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\inputs.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\sense.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./obj/config.o : \
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
-./obj/inputs.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSoCGPIOINT.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
+./obj/inputs.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSOCGP~1.H\
    ./lib/PWMDB8_1.h ./lib/SAR8_1.h ./lib/UART.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\inputs.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/M8C.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/M8C.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\comm.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\inputs.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./obj/limit.o : \
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\sense.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
-./obj/main.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSoCGPIOINT.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\sense.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
+./obj/main.o :  ./lib/PGA_1.h ./lib/PSoCAPI.h ./lib/PSOCGP~1.H\
    ./lib/PWMDB8_1.h ./lib/SAR8_1.h ./lib/UART.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\comm.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\inputs.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\sense.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/M8C.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/M8C.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\comm.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\inputs.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\sense.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./obj/pas.o : \
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\PAS.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\PAS.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./obj/sense.o : \
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\bldc.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\config.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\limit.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\sense.h\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\types.h\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.h
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\bldc.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\config.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\limit.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\sense.h\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\types.h
 ./lib/obj/pga_1.o :  ./lib/PGA_1.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
-./lib/obj/psocconfig.o :  ./lib/GlobalParams.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
+./lib/obj/psocconfig.o :  ./lib/GLOBAL~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/psocconfigtbl.o : \
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
-./lib/obj/psocgpioint.o :  ./lib/PSoCGPIOINT.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc
+./lib/obj/psocgpioint.o :  ./lib/PSOCGP~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc
 ./lib/obj/pwmdb8_1.o :  ./lib/PWMDB8_1.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/pwmdb8_1int.o :  ./lib/PWMDB8_1.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/sar8_1.o :  ./lib/SAR8_1.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/sar8_1int.o :  ./lib/SAR8_1.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/uart.o :  ./lib/UART.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/uartint.o :  ./lib/UART.inc\
-   F:\GitHub\lishui-cypress-custom-fw\Lishui-Cypress-Custom-FW\LishuiTest1\LishuiTest1\memory.inc\
-   G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/include/CY8C24033/m8c.inc
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2/m8c.inc\
+   C:\Users\Anwender\DOWNLO~1\LISHUI~1\LISHUI~1\LISHUI~1\memory.inc
 ./lib/obj/uartplus.o : 

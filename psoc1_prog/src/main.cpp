@@ -1,58 +1,21 @@
-/* Cypress PSoC 1 ISSP programmer firmware for the Arduino Mega 2560.
- * See README.md for wiring and the serial protocol.
+/* Cypress PSoC 1 ISSP programmer firmware for the Arduino Mega 2560 and the
+ * ESP32.  See README.md for wiring and the serial protocol.
+ *
+ * Everything that touches a pin goes through hal_avr.h or hal_esp32.h; the
+ * ISSP logic below is shared.
  */
 
 #include <Arduino.h>
-#include <avr/io.h>
-#include <avr/pgmspace.h>
+
+#if defined(ARDUINO_ARCH_AVR)
+#include "hal_avr.h"
+#elif defined(ARDUINO_ARCH_ESP32)
+#include "hal_esp32.h"
+#else
+#error "Unsupported board: build for an Arduino Mega or an ESP32"
+#endif
 
 #include "devices.h"
-
-#if !defined(__AVR_ATmega2560__) && !defined(__AVR_ATmega1280__)
-#error "This firmware needs an Arduino Mega: monitor mode uses USART2."
-#endif
-
-/* ------------------------------------------------------------------------- *
- * Pin map - everything on PORTH
- *
- * SCLK and SDATA must share a port: data_send() toggles both with one
- * write.  PH0/PH1 are also RXD2/TXD2, so monitor mode can bridge the same
- * two wires through the hardware USART2.
- *
- *   SDATA = target P1[0] = target TX  ->  D17  PH0  RXD2
- *   SCLK  = target P1[1] = target RX  <-  D16  PH1  TXD2
- *   XRES                              <-  D6   PH3
- *   Vdd switch                        <-  D7   PH4
- * ------------------------------------------------------------------------- */
-
-#define ISSP_PORT PORTH
-#define ISSP_DDR  DDRH
-#define ISSP_IN   PINH
-#define SDA_PIN   BIT0
-#define SCL_PIN   BIT1
-#define RES_PIN   BIT3
-#define PWR_PIN   BIT4
-
-#define LED_PORT PORTB
-#define LED_DDR  DDRB
-#define LED_PIN  BIT7 /* D13, on board LED */
-
-/* Define PWR_ACTIVE_LOW when the Vdd switch is a high side p-channel MOSFET,
- * so that a low pin powers the target. */
-#ifdef PWR_ACTIVE_LOW
-#define TARGET_POWER_ON  ISSP_PORT &= ~PWR_PIN
-#define TARGET_POWER_OFF ISSP_PORT |= PWR_PIN
-#else
-#define TARGET_POWER_ON  ISSP_PORT |= PWR_PIN
-#define TARGET_POWER_OFF ISSP_PORT &= ~PWR_PIN
-#endif
-
-#define LED_ON  LED_PORT |= LED_PIN
-#define LED_OFF LED_PORT &= ~LED_PIN
-
-#define DELAY for(i=0;i<1;i++);
-#define _CLK1 ISSP_PORT |= SCL_PIN; DELAY
-#define _CLK0 ISSP_PORT &= ~SCL_PIN; DELAY
 
 /* ------------------------------------------------------------------------- *
  * Settings
@@ -62,24 +25,38 @@
 #define INIT_MODE_RESET 1 /* XRES pulse (needs the XRES pin wired)   */
 #define INIT_MODE_POWER 2 /* power cycle (for packages without XRES) */
 
+/* Where the target's Vdd comes from, for INIT_MODE_POWER. */
+#define PWR_SRC_GPIO     0 /* a pin we switch (Mega D7, ESP32 GPIO15)     */
+#define PWR_SRC_EXTERNAL 1 /* a supply the user switches, seen on SENSE   */
+
+#ifdef POWER_EXTERNAL
+#if !HAVE_PWR_SENSE
+#error "POWER_EXTERNAL needs a supply sense pin, which this board has not got"
+#endif
+#define DEFAULT_POWER_SRC PWR_SRC_EXTERNAL
+#else
+#define DEFAULT_POWER_SRC PWR_SRC_GPIO
+#endif
+
 #define TVDDWAIT_US 500    /* default delay from Vdd on to polling SDATA */
 #define POWER_OFF_MS 500   /* hold-down time for the target supply       */
 
-/* Bound every wait on SDATA (about a second at 16 MHz). */
-#define SDATA_TIMEOUT 2000000UL
+#define SDATA_TIMEOUT_US 1000000UL /* bound every wait on SDATA            */
+#define EXT_WAIT_MS 30000UL        /* how long the user gets per switch    */
+#define SUPPLY_OFF_MS 300          /* external supply must read off so long */
 
 #define MON_BAUD 19200UL  /* default monitor line rate */
 #define MON_ESCAPE 0x1D   /* Ctrl-], leaves monitor mode */
 
-const uint16_t fw = 0x0005;  /* firmware version */
+const uint16_t fw = 0x0007;  /* firmware version */
 
-volatile uint16_t i;
 uint16_t dev_id = 0;
 int8_t dev_index = -1;                 /* index into psoc_devices, -1 if unknown */
 uint16_t blocks_override = 0;          /* 0 = use the device table */
 uint8_t init_mode = INIT_MODE_AUTO;
 uint8_t active_mode = INIT_MODE_RESET; /* mode that last acquired the target */
-uint8_t vdd_5v = 1;                    /* which INITIALIZE-3 vector to send */
+uint8_t power_src = DEFAULT_POWER_SRC;
+uint8_t vdd_5v = DEFAULT_VDD_5V;       /* which INITIALIZE-3 vector to send */
 uint8_t pull_timeouts = 0;             /* sticky count of WAIT-AND-POLL timeouts */
 uint16_t tvddwait_us = TVDDWAIT_US;
 uint32_t mon_baud = MON_BAUD;
@@ -90,53 +67,48 @@ uint8_t ram_blk[64];
  * Bit banging
  * ------------------------------------------------------------------------- */
 
-/* Clock out len bits, MSB first.  The clock is low on entry and exit. */
-void data_send(const uint8_t *data, uint16_t len) {
-  uint8_t prev = 0;
+#define CLK_PULSE() do { SCL_HIGH(); ISSP_DELAY(); SCL_LOW(); ISSP_DELAY(); } while (0)
 
-  ISSP_DDR |= SDA_PIN | SCL_PIN;
-  ISSP_PORT |= SDA_PIN;  /* SDATA starts high */
-  LED_ON;
+/* Clock out len bits, MSB first.  The clock is low on entry and exit.  The
+ * data bit is set up before the rising edge; the target samples on the
+ * falling one. */
+void data_send(const uint8_t *data, uint16_t len) {
+  SDA_HIGH();  /* SDATA starts high */
+  SDA_OUT();
+  SCL_OUT();
+  LED_ON();
   for (uint16_t k = 0; k < len; k++) {
-    uint8_t curr = (data[k / 8] & (BIT7 >> k % 8)) == 0;
-    if (curr != prev) {
-      prev = curr;
-      ISSP_PORT ^= SDA_PIN | SCL_PIN;
-    } else {
-      ISSP_PORT ^= SCL_PIN;
-    }
-    DELAY;
-    ISSP_PORT ^= SCL_PIN;
-    DELAY;
+    if (data[k / 8] & (0x80 >> (k % 8)))
+      SDA_HIGH();
+    else
+      SDA_LOW();
+    CLK_PULSE();
   }
 }
 
 /* Poll SDATA until it reaches the wanted level.  Returns 0 on timeout. */
-uint8_t wait_sdata(uint8_t high) {
-  uint32_t n = SDATA_TIMEOUT;
-  while (((ISSP_IN & SDA_PIN) != 0) != high)
-    if (!--n) return 0;
-  return 1;
+uint8_t wait_sdata(uint8_t high, uint32_t timeout_us = SDATA_TIMEOUT_US) {
+  uint32_t start = micros();
+  for (uint8_t n = 0;; n++) {
+    if (SDA_READ() == high) return 1;
+    if (n == 0 && micros() - start > timeout_us) return 0;
+  }
 }
 
 void sdata_release() {
-  LED_OFF;
-  ISSP_PORT &= ~SDA_PIN;
-  ISSP_DDR &= ~SDA_PIN;
+  LED_OFF();
+  SDA_LOW();
+  SDA_IN();
 }
 
 /* WAIT-AND-POLL: wait for the target to finish, then 40 clocks. */
 uint8_t data_pull() {
   sdata_release();
   if (!wait_sdata(0)) goto fail;
-  _CLK1;
-  _CLK0;
+  CLK_PULSE();
   if (!wait_sdata(1)) goto fail;  /* target drives SDATA high ... */
   if (!wait_sdata(0)) goto fail;  /* ... and then low again        */
-  for (uint8_t j = 0; j < 40; j++) {
-    _CLK1;
-    _CLK0;
-  }
+  for (uint8_t j = 0; j < 40; j++) CLK_PULSE();
   return 1;
 fail:
   if (pull_timeouts < 255) pull_timeouts++;
@@ -145,16 +117,13 @@ fail:
 
 void data_read(uint8_t *buf, uint8_t bits) {
   sdata_release();
-  _CLK1;
-  _CLK0;
+  CLK_PULSE();
   for (uint8_t k = 0; k < bits; k++) {
-    _CLK1;
-    _CLK0;
+    CLK_PULSE();
     if (k % 8 == 0) buf[k / 8] = 0;
-    if (ISSP_IN & SDA_PIN) buf[k / 8] |= BIT7 >> k % 8;
+    if (SDA_READ()) buf[k / 8] |= 0x80 >> (k % 8);
   }
-  _CLK1;
-  _CLK0;
+  CLK_PULSE();
 }
 
 uint8_t read_byte(uint8_t addr) {
@@ -191,51 +160,209 @@ uint8_t device_flags() {
  * Line and supply control
  * ------------------------------------------------------------------------- */
 
+/* Status line for the host while we wait for the user, "#..." so that
+ * programmer.py can tell it from the final reply. */
+void status(const char *s) {
+  Serial.print('#');
+  Serial.println(s);
+}
+
 /* Float SCLK, SDATA and XRES: before cutting the supply, so nothing back
  * feeds an unpowered chip, and to hand P1[0]/P1[1] to the application. */
 void issp_idle() {
-  ISSP_DDR &= ~(SCL_PIN | SDA_PIN | RES_PIN);
-  ISSP_PORT &= ~(SCL_PIN | SDA_PIN | RES_PIN);
-  LED_OFF;
+  hal_issp_idle();
+  LED_OFF();
 }
 
-/* Drive the ISSP lines, clock and XRES low. */
-void issp_drive() {
-  ISSP_PORT &= ~(SCL_PIN | RES_PIN);
-  ISSP_DDR |= SCL_PIN | SDA_PIN | RES_PIN;
+void issp_drive() { hal_issp_drive(); }
+
+/* Switch the target supply, if it is ours to switch. */
+void target_power(uint8_t on) {
+  if (power_src == PWR_SRC_GPIO) hal_power(on);
+}
+
+void set_power_src(uint8_t src) {
+  if (src > PWR_SRC_EXTERNAL) return;
+  if (src == PWR_SRC_EXTERNAL && !HAVE_PWR_SENSE) return;
+  power_src = src;
+  if (src == PWR_SRC_EXTERNAL) {
+    issp_idle();
+    hal_power_release();  /* never fight the external supply */
+  } else {
+    hal_power(1);
+  }
 }
 
 /* Cut the target supply and hold it down for a fixed time. */
 void power_off() {
   issp_idle();
-  TARGET_POWER_OFF;
+  target_power(0);
   delay(POWER_OFF_MS);
 }
 
 void xres_pulse() {
   issp_drive();
-  ISSP_PORT |= RES_PIN;
-  for (i = 0; i < 500; i++);   /* Txres, 10 us minimum */
-  ISSP_PORT &= ~RES_PIN;
+  RES_HIGH();
+  hal_xres_delay();
+  RES_LOW();
 }
 
-/* Power cycle the target and catch the high-to-low edge it puts on SDATA
- * once it is ready for programming.  Returns 0 if the edge never came. */
-uint8_t power_cycle() {
+/* While Vdd ramps, SDATA follows it slowly through the input threshold and
+ * chatters: on the Lishui board from a 3.3 V GPIO, spikes of 1 us to 0.26 ms
+ * from ~1.6 ms, before the real power-up pulse (high until ~7.6 ms).  Taking
+ * a spike for the pulse sends the vectors ~6 ms early and the target boots
+ * its application instead.  So the high only counts once it has lasted this
+ * long; the real pulse is 4.5 ms or more. */
+#define SDATA_HIGH_MIN_US 1000
+
+/* Wait for the target's power-up pulse on SDATA: a high of at least
+ * SDATA_HIGH_MIN_US, then its fall, which is caught at once because the
+ * programming window opens there.  Returns 0 on timeout. */
+uint8_t wait_powerup_pulse() {
+  uint32_t start = micros();
+  for (;;) {
+    uint32_t used = micros() - start;
+    if (used >= SDATA_TIMEOUT_US || !wait_sdata(1, SDATA_TIMEOUT_US - used))
+      return 0;
+    uint32_t high = micros();
+    while (SDA_READ())
+      if (micros() - high >= SDATA_HIGH_MIN_US) return wait_sdata(0);
+  }
+}
+
+/* Power cycle the target from the GPIO and catch the high-to-low edge it
+ * puts on SDATA once it is ready for programming.  Returns 0 if the edge
+ * never came. */
+uint8_t power_cycle_gpio() {
   power_off();
-  TARGET_POWER_ON;
+  hal_sda_pulldown(1);
+  target_power(1);
   /* Do not wait for the rail: the target raises SDATA at its POR trip and
-   * drops it when ready (2.6 ms / 7.1 ms on the Lishui board), and waiting
-   * for a settled rail risks missing that fall. */
+   * drops it when ready (2.6 ms / 7.1 ms on the Lishui board at 5 V,
+   * ~1.7 ms / 7.6 ms from a 3.3 V ESP32 pin), and waiting for a settled
+   * rail risks missing that fall. */
   delayMicroseconds(tvddwait_us);
-  return wait_sdata(1) && wait_sdata(0);
+  uint8_t ok = wait_powerup_pulse();
+  hal_sda_pulldown(0);
+  return ok;
 }
 
-/* Restart the target and give P1[0]/P1[1] back to the application. */
+/* Diagnostic ('T'): power cycle from the GPIO, but send no vectors.
+ * Reply: "r1 r2 ... rn|edges".  SDATA (pulled down) is sampled every
+ * PROBE_STEP_US for PROBE_SAMPLES samples from Vdd on; r1.. are the lengths
+ * in samples of the alternating low/high runs, starting with low.  The last
+ * run may be cut short by the window or by running out of slots.  Then the
+ * number of edges in the next 200 ms with SDATA pulled up.  The boot ROM
+ * makes one high pulse; a booted application toggles P1[0] with its UART. */
+#define PROBE_STEP_US 10
+#define PROBE_SAMPLES 3000   /* 30 ms */
+#define PROBE_RUNS 48
+void probe() {
+  uint16_t t[PROBE_RUNS];
+  uint8_t n = 0;
+  uint16_t edges = 0;
+
+  if (power_src == PWR_SRC_GPIO) {
+    power_off();
+    hal_sda_pulldown(1);
+    target_power(1);
+    uint32_t t0 = micros();
+    uint8_t level = 0;
+    t[0] = 0;
+    for (uint16_t k = 0; k < PROBE_SAMPLES; k++) {
+      while (micros() - t0 < (uint32_t)k * PROBE_STEP_US) {}
+      uint8_t s = SDA_READ();
+      if (s != level) {
+        if (n == PROBE_RUNS - 1) break;
+        level = s;
+        t[++n] = 0;
+      }
+      t[n]++;
+    }
+    n++;
+    hal_sda_pulldown(0);
+
+    hal_sda_pullup(1);  /* an open drain TX only shows up with a pull-up */
+    uint8_t level2 = SDA_READ();
+    uint32_t t1 = micros();
+    while (micros() - t1 < 200000UL) {
+      uint8_t s = SDA_READ();
+      if (s != level2) {
+        level2 = s;
+        if (edges < 0xFFFF) edges++;
+      }
+    }
+    hal_sda_pullup(0);
+  }
+  for (uint8_t k = 0; k < n; k++) {
+    if (k) Serial.print(' ');
+    Serial.print(t[k]);
+  }
+  Serial.print('|');
+  Serial.println(edges);
+}
+
+#if HAVE_PWR_SENSE
+/* Wait until the sense input has read `on` for stable_ms without a break. */
+uint8_t wait_supply(uint8_t on, uint32_t stable_ms) {
+  uint32_t start = millis(), since = start;
+  while (millis() - start < EXT_WAIT_MS) {
+    if (hal_supply_sensed() != on)
+      since = millis();
+    else if (millis() - since >= stable_ms)
+      return 1;
+    HAL_IDLE();
+  }
+  return 0;
+}
+
+/* The user power cycles an external supply.  Wait for it to go off, then
+ * for the target to come up.  The sense pin may trip after the target's
+ * POR (it depends on the divider), so the first of "sense high" or "SDATA
+ * high" counts as power on; SDATA is pulled down while it floats so an
+ * unpowered target reads low. */
+uint8_t power_cycle_external() {
+  issp_idle();
+  if (hal_supply_sensed()) status("supply-off");
+  if (!wait_supply(0, SUPPLY_OFF_MS)) {
+    status("timeout");
+    return 0;
+  }
+  hal_sda_pulldown(1);
+  status("supply-on");
+
+  uint32_t start = millis();
+  uint8_t ok = 0;
+  for (uint16_t n = 0;; n++) {
+    if (SDA_READ() || hal_supply_sensed()) {
+      ok = 1;
+      break;
+    }
+    /* the high SDATA lasts milliseconds, so an occasional idle is safe */
+    if (n == 0) {
+      if (millis() - start > EXT_WAIT_MS) break;
+      HAL_IDLE();
+    }
+  }
+  if (ok)
+    ok = wait_powerup_pulse();
+  else
+    status("timeout");
+  hal_sda_pulldown(0);
+  return ok;
+}
+#else
+uint8_t power_cycle_external() { return 0; }
+#endif
+
+/* Restart the target and give P1[0]/P1[1] back to the application.  An
+ * external supply cannot be cycled from here; the host asks the user. */
 void reset_device() {
   if (active_mode == INIT_MODE_POWER) {
-    power_off();
-    TARGET_POWER_ON;
+    if (power_src == PWR_SRC_GPIO) {
+      power_off();
+      target_power(1);
+    }
   } else {
     xres_pulse();
   }
@@ -333,8 +460,13 @@ void read_block(uint8_t block, uint8_t offset) {
 
 uint16_t acquire_reset() {
   active_mode = INIT_MODE_RESET;
-  TARGET_POWER_ON;
-  delay(10);   /* in case we switch Vdd, let it settle */
+  if (power_src == PWR_SRC_EXTERNAL) {
+    /* never drive the lines into an unpowered chip */
+    if (!hal_supply_sensed()) return 0;
+  } else {
+    target_power(1);
+    delay(10);   /* in case we switch Vdd, let it settle */
+  }
   xres_pulse();
   init_vectors();
   return read_id();
@@ -342,7 +474,9 @@ uint16_t acquire_reset() {
 
 uint16_t acquire_power() {
   active_mode = INIT_MODE_POWER;
-  if (!power_cycle()) return 0;
+  uint8_t ok = power_src == PWR_SRC_EXTERNAL ? power_cycle_external()
+                                             : power_cycle_gpio();
+  if (!ok) return 0;
   issp_drive();
   init_vectors();   /* Tacq allows 3 ms between the edge and INITIALIZE-1 */
   return read_id();
@@ -369,29 +503,34 @@ uint16_t initialise() {
 /* ------------------------------------------------------------------------- *
  * Monitor mode
  *
- * Bridges the target UART on P1[0]/P1[1] to the host port through the
- * hardware USART2, until the host sends MON_ESCAPE.  While USART2 is on it
- * owns PH0/PH1, so no ISSP code may run - the blocking loop ensures that.
+ * Bridges the target UART on P1[0]/P1[1] to the host port through a
+ * hardware UART (USART2 on the Mega, UART1 on the ESP32), until the host
+ * sends MON_ESCAPE.  While the UART is on it owns the pins, so no ISSP code
+ * may run - the blocking loop ensures that.
  * ------------------------------------------------------------------------- */
 
 void monitor() {
   issp_idle();
-  ISSP_PORT |= SDA_PIN;  /* pull-up on RXD2, so an absent target reads idle */
-  TARGET_POWER_ON;
-  LED_ON;
-  Serial2.begin(mon_baud);
+  target_power(1);
+  LED_ON();
+  hal_mon_begin(mon_baud);
 
   for (;;) {
-    while (Serial2.available()) Serial.write(Serial2.read());
+    uint8_t busy = 0;
+    while (MON_SERIAL.available()) {
+      Serial.write(MON_SERIAL.read());
+      busy = 1;
+    }
     if (Serial.available()) {
       int b = Serial.read();
       if (b == MON_ESCAPE) break;
-      Serial2.write(b);
+      MON_SERIAL.write(b);
+      busy = 1;
     }
+    if (!busy) HAL_IDLE();
   }
 
-  Serial2.flush();
-  Serial2.end();
+  hal_mon_end();
   issp_idle();
 }
 
@@ -412,10 +551,13 @@ uint16_t read16() {
 }
 
 void setup() {
-  LED_DDR |= LED_PIN;
-  LED_OFF;
-  ISSP_DDR |= PWR_PIN;
-  TARGET_POWER_ON;
+  hal_init();
+  LED_OFF();
+  issp_idle();
+  if (power_src == PWR_SRC_GPIO)
+    target_power(1);
+  else
+    hal_power_release();
   Serial.begin(115200);
   Serial.print("> ");
 }
@@ -440,6 +582,13 @@ void loop() {
     case 'd': Serial.println(dev_id, HEX); break;
     case 'D': write16(dev_id); break;
     case 'm': Serial.println(active_mode, HEX); break;
+    case 'p': Serial.println(power_src, HEX); break;
+    case 'P':  /* power source: 0 = GPIO, 1 = external with sense pin */
+      if (Serial.readBytes(&arg, 1) > 0) set_power_src(arg);
+      Serial.println();
+      break;
+    case 'H': Serial.println(HAL_PLATFORM); break;
+    case 'T': probe(); break;  /* SDATA timing after a power cycle, no vectors */
     case 'E':  /* read and clear the WAIT-AND-POLL timeout count */
       Serial.println(pull_timeouts, HEX);
       pull_timeouts = 0;
