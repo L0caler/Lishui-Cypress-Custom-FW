@@ -4,6 +4,7 @@
 #include "PAS.h"
 #include "config.h"
 #include "inputs.h"
+#include "comm.h"
 
 static uint16_t wThrottleAcc;      // << THROTTLE_EMA_SHIFT
 static uint8_t bBrake, bBrakeCount;
@@ -37,7 +38,13 @@ void Inputs_Update(void)
         bBrake = pin;
     }
 
-    if (Cfg.bExternalRel) return;
+    if (Cfg.bExternalRel) {
+        // The UART sets the current, but the brake still cuts it here: a
+        // stalled external controller cannot hold current against the brake.
+        if (!bBrake) BLDC_SetCurrentRel(0);
+        Comm_SendInputs();
+        return;
+    }
     if (PAS_bIsActive() && bBrake)
         BLDC_SetCurrentRel(throttleToRel(Inputs_bThrottle()));
     else

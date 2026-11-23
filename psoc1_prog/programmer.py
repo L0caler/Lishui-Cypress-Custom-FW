@@ -105,6 +105,7 @@ class PSoC1Prog:
         # pyserial re-apply the port settings, the USB serial bridge then
         # reconfigures its UART, and at 115200 that corrupts bytes in flight.
         self._read_deadline(b'> ', 10)
+        self._sync()
         buf1 = os.urandom(BLOCK_SIZE)
         self._write_blk(buf1)
         buf2 = self._read_blk()
@@ -112,6 +113,21 @@ class PSoC1Prog:
             print("Sent: " + buf1.hex(), file=sys.stderr)
             print("Recv: " + buf2.hex(), file=sys.stderr)
             raise ValueError("Programmer self-test failed!")
+        self.fw = self.get_firmware_id()
+        self.platform = self.get_platform() if self.fw >= 0x0006 else 'mega2560'
+
+    def _sync(self):
+        """Get to a clean prompt.  The first '> ' may be the boot greeting
+        (and our newline lost while the board rebooted) or the reply to the
+        newline, and an ESP32 prints a boot log first, so drain and ask for
+        a fresh prompt until one comes back alone."""
+        for _ in range(3):
+            time.sleep(0.2)
+            self.ser.reset_input_buffer()
+            self.ser.write(b'\n')
+            if self._read_deadline(b'\r\n> ', 1.5).endswith(b'\r\n> '):
+                return
+        raise ValueError("Programmer does not answer, is the firmware flashed?")
 
     def _read_deadline(self, until, seconds):
         """Read until `until` (a byte count or a terminator) or `seconds`
@@ -139,18 +155,82 @@ class PSoC1Prog:
         if x != b'\r\n> ':
             raise ValueError("Programmer resturned unexpected result: " + x.hex())
 
+    # Status lines the firmware sends while it waits for an external supply
+    SUPPLY_STATUS = {
+        b'#supply-off': "switch the target supply OFF",
+        b'#supply-on': "now switch the target supply ON",
+        b'#timeout': "gave up waiting for the target supply",
+    }
+
     def reinitialise(self, mode=None):
         if mode is None:
             self.ser.write(b'i')
         else:
             self.ser.write(b'I' + array('B', [self.INIT_MODES[mode]]).tobytes())
-        self._wait(timeout=30)
+        # With an external supply the firmware waits up to 30 s for each
+        # switch, and reports what it is waiting for on "#..." lines.
+        deadline = time.monotonic() + 75
+        while True:
+            line = self._read_deadline(b'\r\n', max(0.0, deadline - time.monotonic()))
+            if not line.endswith(b'\r\n'):
+                raise ValueError("Chip response timeout" if not line else
+                                 "Programmer resturned unexpected result: " + line.hex())
+            if line.startswith(b'#'):
+                key = line.strip()
+                log(self.SUPPLY_STATUS.get(key, key.decode('ascii', 'replace')))
+                continue
+            if line != b'\r\n':
+                raise ValueError("Programmer resturned unexpected result: " + line.hex())
+            break
+        self._wait_prompt()
+
+    POWER_SOURCES = {'gpio': 0, 'external': 1}
+    POWER_NAMES = {0: 'gpio', 1: 'external'}
+
+    def get_power(self):
+        """Where the target supply comes from: 0 = GPIO, 1 = external."""
+        if self.fw < 0x0006:
+            return 0
+        self.ser.write(b'p')
+        res = self.ser.read_until(b'\r\n')
+        self._wait_prompt()
+        return int(res.strip(), 16)
+
+    def set_power(self, source):
+        if self.fw < 0x0006:
+            raise ValueError(f"programmer firmware 0x{self.fw:04x} has no power source "
+                             "setting, flash fw 0x0006 or later")
+        want = self.POWER_SOURCES[source]
+        self.ser.write(b'P' + array('B', [want]).tobytes())
+        self._wait()
+        if self.get_power() != want:
+            raise ValueError(f"the {self.platform} programmer cannot use a {source} supply "
+                             "(no supply sense pin)")
+
+    def get_platform(self):
+        self.ser.write(b'H')
+        res = self.ser.read_until(b'\r\n')
+        self._wait_prompt()
+        return res.strip().decode('ascii', 'replace')
 
     def get_init_mode(self):
         self.ser.write(b'm')
         res = self.ser.read_until(b'\r\n')
         self._wait_prompt()
         return int(res.strip(), 16)
+
+    def probe(self):
+        """Power cycle from the GPIO without acquiring.  Returns SDATA's run
+        lengths in 10 us samples from Vdd on, alternating low/high starting
+        low, and the number of edges in the 200 ms after.  See probe() in
+        src/main.cpp."""
+        if self.fw < 0x0007:
+            raise ValueError(f"programmer firmware 0x{self.fw:04x} has no probe, flash fw 0x0007")
+        self.ser.write(b'T')
+        res = self._read_deadline(b'\r\n', 5)
+        self._wait_prompt()
+        times, edges = res.strip().split(b'|')
+        return [int(x) for x in times.split()], int(edges)
 
     def get_errors(self):
         """Read and clear the firmware's WAIT-AND-POLL timeout counter.
@@ -361,7 +441,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("port", help="Serial port")
-    parser.add_argument("cmd", choices=['flash', 'checksum', 'device', 'read', 'erase', 'reset', 'fw', 'monitor'],
+    parser.add_argument("cmd", choices=['flash', 'checksum', 'device', 'read', 'erase', 'reset', 'fw', 'monitor',
+                                        'probe'],
         help="Command to run\n" +
         "flash - write .hex to device\n" +
         "checksum - returns program checksum from device\n" +
@@ -371,6 +452,7 @@ if __name__ == '__main__':
         "reset - restarts device\n"
         "fw - returns programmer firmware version\n"
         "monitor - serial terminal to the target's UART (P1[0] TX, P1[1] RX)\n"
+        "probe - power cycle and time the target's SDATA power-up signal (diagnostic)\n"
     )
     parser.add_argument("-i", "--input", help="Input intel hex file for flashing")
     parser.add_argument("-o", "--output", help="Output binary for memory dump")
@@ -387,7 +469,13 @@ if __name__ == '__main__':
                              "power - power cycle only, for packages without an XRES pin\n"
                              "        such as the 28 pin CY8C24533")
     parser.add_argument("--vdd", type=float, default=None,
-                        help="Target supply voltage, picks the INITIALIZE-3 vector set (3 or 5)")
+                        help="Target supply voltage, picks the INITIALIZE-3 vector set (3 or 5)\n"
+                             "(default: 5 on the Mega, 3 on the ESP32)")
+    parser.add_argument("--power", choices=['gpio', 'external'], default=None,
+                        help="Where the target supply comes from, for --init-mode power/auto\n"
+                             "gpio     - the programmer switches it from a pin (default)\n"
+                             "external - you switch a supply, the ESP32 watches its sense pin\n"
+                             "The setting stays until the programmer resets.")
     parser.add_argument("--blocks", type=int, default=None,
                         help="Override the target's flash size in 64 byte blocks")
     parser.add_argument("--ignore-checksum", action="store_true",
@@ -404,26 +492,70 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     prog = PSoC1Prog(args.port)
-    log("programmer initialised")
+    if args.power is not None:
+        prog.set_power(args.power)
+    power = prog.POWER_NAMES.get(prog.get_power(), '?')
+    external = power == 'external'
+    log(f"programmer initialised ({prog.platform}, fw 0x{prog.fw:04x}, {power} supply)")
+
+    def restart_target():
+        """Restart the target after programming.  An external supply cannot
+        be switched from here, so ask for it when that is the way in."""
+        prog.reset_device()
+        if external and prog.get_init_mode() == prog.INIT_MODES['power']:
+            log("power cycle the target supply to start the application")
 
     if args.cmd == 'monitor':
         # No programming mode here: that would halt the target's application.
         # --reset restarts the target first, which needs it acquired once so
         # the firmware knows to power cycle it (the CY8C24533 has no XRES).
         if args.reset:
-            log("restarting target")
-            prog.reinitialise(args.init_mode)
-            prog.reset_device()
+            if external:
+                log("power cycle the target supply to restart it")
+            else:
+                log("restarting target")
+                prog.reinitialise(args.init_mode)
+                prog.reset_device()
         prog.monitor(args.baud, echo=not args.no_echo, hexdump=args.hex)
+        exit(0)
+    if args.cmd == 'fw':
+        # Needs no target, so do not acquire one.
+        print(prog.fw)
+        exit(0)
+    if args.cmd == 'probe':
+        if external:
+            log("probe needs --power gpio")
+            exit(1)
+        runs, edges = prog.probe()
+        STEP_US = 10
+        t = 0
+        for k, r in enumerate(runs):
+            log(f"{t * STEP_US / 1000:7.2f} ms  {'HIGH' if k % 2 else 'low '} for "
+                f"{r * STEP_US / 1000:.2f} ms")
+            t += r
+        if t * STEP_US < 30000:
+            log(f"(record stopped at {t * STEP_US / 1000:.2f} ms: out of run slots)")
+        log(f"{edges} edges in the 200 ms after that "
+            "(a booted application toggles P1[0] with its UART)")
+        exit(0)
+    if args.cmd == 'reset' and external:
+        # Acquiring it first would need one power cycle and restarting it
+        # another; the user can just do the one.
+        log("the target has an external supply: power cycle it to restart it")
         exit(0)
     if args.vdd is not None:
         prog.set_supply(args.vdd)
     if args.init or args.init_mode is not None:
+        if external and args.init_mode != 'reset':
+            log("acquiring the target: you will be asked to switch its supply off and on")
         prog.reinitialise(args.init_mode)
     if args.blocks is not None:
         prog.set_flash_blocks(args.blocks)
-    # auto mode may have tried and abandoned a power cycle, so start clean
-    prog.get_errors()
+    # Report, then clear, the WAIT-AND-POLL timeouts of the acquisition.  In
+    # auto mode some may come from an abandoned XRES attempt.
+    errs = prog.get_errors()
+    if errs:
+        log(f"the target did not answer {errs} WAIT-AND-POLL(s) while being acquired")
 
     devid = prog.get_device_id()
     blocks = prog.get_flash_blocks()
@@ -470,8 +602,14 @@ if __name__ == '__main__':
         if args.read:
             mem_data = prog.read_memory(len(ifile.program) // BLOCK_SIZE)
             if mem_data != ifile.program:
-                log(f"written program does not match one on device")
-                exit(1)
+                if not any(mem_data) and csum == ifile.checksum:
+                    # Protected blocks read back as zeros (see README), but
+                    # the SROM checksum covers the real contents.
+                    log("readback is all zeros: the flash is read protected "
+                        "(flashsecurity.txt), the matching checksum verifies it")
+                else:
+                    log(f"written program does not match one on device")
+                    exit(1)
         log("success")
     elif args.cmd == 'checksum':
         if args.input is not None:
@@ -495,7 +633,7 @@ if __name__ == '__main__':
     elif args.cmd == 'fw':
         print(prog.get_firmware_id())
     if args.reset:
-        prog.reset_device()
+        restart_target()
     if args.monitor:
         prog.monitor(args.baud, echo=not args.no_echo, hexdump=args.hex)
     exit(0)

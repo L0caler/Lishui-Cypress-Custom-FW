@@ -1,9 +1,9 @@
 PROJNAME=LishuiTest1
 DEVICE=CY8C24533
 BASEDEVICE=CY8C24033
-PROJPATH=F:/GitHub/lishui-cypress-custom-fw/Lishui-Cypress-Custom-FW/LishuiTest1/LishuiTest1
-PSOCDIR=G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr
-INCLUDE_PATH=
+PROJPATH=C:/Users/Anwender/DOWNLO~1/LISHUI~1/LISHUI~1/LISHUI~1
+PSOCDIR=
+INCLUDE_PATH=C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2
 CSRCS= bldc.c comm_binary.c comm_text.c config.c inputs.c limit.c main.c pas.c sense.c
 LIBCSRCS=
 STDCSRCS=

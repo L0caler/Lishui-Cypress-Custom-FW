@@ -2,4 +2,4 @@
  -bdata:0.0xFF -rwh:SSCParmBlk:0x00F7.0x00FF  -O -elim:UserModules 
  -o"output/LishuiTest1" 
 obj/bldc.o obj/comm_binary.o obj/comm_text.o obj/config.o obj/inputs.o obj/limit.o obj/main.o obj/pas.o obj/sense.o 	
- ./lib/libPSoc.a -LG:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/lib/SMM G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/lib/CY8C24033/cms.a G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr/tools/lib/SMM/UASW/MAC/arith.a  
+ ./lib/libPSoc.a -LC:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/CY8C24033/cms.a C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/lib/SMM/UASW/MAC/arith.a  

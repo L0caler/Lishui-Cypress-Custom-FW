@@ -2,8 +2,14 @@
 #define DEVICES_H
 
 #include <stdint.h>
+#ifdef __AVR__
 #include <avr/pgmspace.h>
+#else
+#include <pgmspace.h>
+#endif
 
+/* The ESP-IDF headers already define these, with the same values. */
+#ifndef BIT0
 #define BIT0 0b00000001
 #define BIT1 0b00000010
 #define BIT2 0b00000100
@@ -12,6 +18,7 @@
 #define BIT5 0b00100000
 #define BIT6 0b01000000
 #define BIT7 0b10000000
+#endif
 
 /* ------------------------------------------------------------------------- *
  * Silicon IDs

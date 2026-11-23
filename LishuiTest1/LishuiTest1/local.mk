@@ -49,8 +49,18 @@
 # "G:\Cypress\PSoC Designer", created with (no admin rights needed):
 #   mklink /J G:\Cypress\PSoCDesigner "G:\Cypress\PSoC Designer"
 #
+# On a drive that does have 8.3 names (e.g. a default install under
+# "C:\Program Files (x86)"), psocmakemake writes a usable short INCLUDE_PATH
+# such as C:/PROGRA~2/Cypress/PSOCDE~1/5.4/Common/CYPRES~1/tools/include/CY8C24~2
+# but still leaves PSOCDIR empty. PSOCDIR is then the part before /tools/include/.
+# Only with no INCLUDE_PATH at all fall back to the junction above.
+#
+ifeq ($(strip $(INCLUDE_PATH)),)
 PSOCDIR:=G:/Cypress/PSoCDesigner/5.4/Common/CypressSemiBuildMgr
 INCLUDE_PATH:=$(PSOCDIR)/tools/include/$(BASEDEVICE)
+else
+PSOCDIR:=$(firstword $(subst /tools/include/, ,$(firstword $(subst ;, ,$(INCLUDE_PATH)))))
+endif
 #
 # The compile/assemble rules call the bare "iccm8c.exe"/"iasm8c.exe" via PATH.
 # The IDE puts "G:\Cypress\PSoC Designer\...\tools" on PATH, and iccm8c builds
@@ -58,7 +68,7 @@ INCLUDE_PATH:=$(PSOCDIR)/tools/include/$(BASEDEVICE)
 # it splits at the space:
 #   extra file name "-D__IMAGECRAFT__" encountered
 #   !E: cannot load source file "Designer\5.4\...\tools\icppw.exe"; file not found
-# Invoking the tools through the junction path avoids that. "override" is
+# Invoking the tools through the space-free PSOCDIR avoids that. "override" is
 # required because the Makefile assigns CCMD/ASMCMD after including local.mk.
 override CCMD:=$(PSOCDIR)/tools/iccm8c.exe
 override ASMCMD:=$(PSOCDIR)/tools/iasm8c.exe

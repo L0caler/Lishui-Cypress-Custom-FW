@@ -6,9 +6,13 @@
 #include "types.h"
 
 // UART & System
-#define USE_BINARY_COMM         0       // 0 = text, 1 = binary
+#define USE_BINARY_COMM         1       // 0 = text, 1 = binary
 #define AUTO_ENABLE             1       // 1 = auto-zero current & enable on boot, 0 = wait for UART 'g'
-#define COMMAND_TIMEOUT_TICKS   255     // 512 Hz ticks
+// Binary only: while the current command comes from the UART, no current
+// frame for this long hands control back to inputs.c (throttle / PAS / brake).
+// The ESP32 answers every 32 Hz inputs frame, so 64 ticks (125 ms) is about 4
+// missed frames.  Max 255 (8 bit tick).
+#define COMMAND_TIMEOUT_TICKS   64      // 512 Hz ticks
 #define IBAT_MAX_LIMIT_MA       20000
 #define IPH_MAX_LIMIT_MA        40000
 
@@ -83,8 +87,8 @@
 #define CFG_DUTY_MAX            BLDC_DUTY_MAX
 #define CFG_IBAT_MAX_MA         8000
 #define CFG_IPH_MAX_MA          20000
-#define CFG_ERPM_MAX            9814    // was 4907; edge counter (uint8, 1/8 s) tops out at 20400
-#define CFG_ERPM_LIM_START      ((uint16_t)(CFG_ERPM_MAX * 9UL / 10))   // derate starts at 90 % (8832)
+#define CFG_ERPM_MAX            9900    // edge counter (uint8, 1/8 s) tops out at 20400
+#define CFG_ERPM_LIM_START      ((uint16_t)(CFG_ERPM_MAX * 95UL / 100))
 #define CFG_VBAT_MIN_MV         30500       // 0 = off
 #define CFG_VBAT_LIM_START_MV   35000
 #define VBAT_WARN1_MV           35000       // low-battery cues, independent of the derate:
